@@ -42,6 +42,7 @@ int insertPackage(struct belt *currentBelt) {
     struct box currentBox = generatePackage();
     int returnCode = -1;
     long time = getCurrentTime();
+    lockSemaphore(tryInsertSemaphore);
     while (returnCode && myBelt->flag) {
         moveBelt(currentBelt);
         returnCode = insertBox(currentBelt, currentBox);
@@ -88,16 +89,8 @@ void workerLoop(struct belt *currentBelt) {
 //        printf("worker %d is awaiting a chance to put new package\n",getpid());
         printf("Worker %d at time %ld Waits\n", getpid(), getCurrentTime());
 
-        while (semvalue(tryInsertSemaphore)) {
-            lockSemaphore(workerSemaphore);
-            if(semvalue(tryInsertSemaphore)) {
-                lockSemaphore(tryInsertSemaphore);
-            }
-//            if (!semvalue(tryInsertSemaphore)) {
-//                unlockSemaphore(workerSemaphore);
-//            }
-        }
 
+        lockSemaphore(workerSemaphore);
         insertPackage(currentBelt);
         unlockSemaphore(truckerSemaphore);
 

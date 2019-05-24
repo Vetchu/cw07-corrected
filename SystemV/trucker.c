@@ -83,7 +83,6 @@ void truckLoop(struct belt *myBelt, int maxWeight, int cycles) {
             printf("Trucker Waits\n");
             lastWeight = 0;
         }
-        for(int i=0;i<100000000;i++);
 
         if (semvalue(tryInsertSemaphore)) {
             unlockSemaphore(workerSemaphore);
